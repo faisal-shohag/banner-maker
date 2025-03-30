@@ -29,7 +29,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
         className="min-h-32 text-lg font-kalpurush"
       />
       
-      <div className="space-y-2">
+      <div className="space-y-2 hidden">
         <Label>Font Size: {fontSize}px</Label>
         <Slider
           value={[fontSize]}
@@ -41,7 +41,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
       </div>
       
       {setTextWidth && (
-        <div className="space-y-2">
+        <div className="space-y-2 hidden">
           <Label>Text Width: {textWidth}%</Label>
           <Slider
             value={[textWidth]}

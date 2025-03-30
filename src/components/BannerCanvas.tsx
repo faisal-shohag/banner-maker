@@ -2,9 +2,19 @@
 
 import { useDeviceSize } from '@/hooks/use-device-size';
 import React, { useRef, useState, useEffect } from 'react';
+import Moveable from "react-moveable";
 
 interface BannerCanvasProps {
   template: Template;
+  logos: Logo[];
+}
+
+interface Logo {
+  id: string;
+  url: string;
+  position?: { x: number; y: number };
+  size?: { width: number; height: number };
+  visible: boolean;
 }
 
 interface TextPosition {
@@ -47,7 +57,7 @@ interface Template {
   };
 }
 
-const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
+const BannerCanvas: React.FC<BannerCanvasProps> = ({ template, logos = [] }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const mainTextRef = useRef<HTMLDivElement>(null);
   const detailsTextRef = useRef<HTMLDivElement>(null);
@@ -56,8 +66,9 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
   const [detailsTextPosition, setDetailsTextPosition] = useState<TextPosition>({ x: 0, y: 0 });
   const [mainTextBounds, setMainTextBounds] = useState<TextBounds>({ width: 0, height: 0 });
   const [detailsTextBounds, setDetailsTextBounds] = useState<TextBounds>({ width: 0, height: 0 });
-  const [isDragging, setIsDragging] = useState<'main' | 'details' | null>(null);
+  const [isDragging, setIsDragging] = useState<'main' | 'details' | string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [activeElement, setActiveElement] = useState<'main' | 'details' | string | null>(null);
   const { isSmall } = useDeviceSize(); 
 
   const [positionsCustomized, setPositionsCustomized] = useState({
@@ -65,8 +76,26 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
     details: false,
   });
 
+  // Logo states
+  const [logoPositions, setLogoPositions] = useState<{ [key: string]: { x: number, y: number } }>({});
+  const [logoSizes, setLogoSizes] = useState<{ [key: string]: { width: number, height: number } }>({});
+  
+  useEffect(() => {
+    // Initialize logo positions if they don't exist
+    logos.forEach(logo => {
+      if (!logoPositions[logo.id] && logo.visible) {
+        setLogoPositions(prev => ({
+          ...prev,
+          [logo.id]: logo.position || { x: 50, y: 50 }
+        }));
 
-
+        setLogoSizes(prev => ({
+          ...prev,
+          [logo.id]: logo.size || { width: 60, height: 60 }
+        }));
+      }
+    });
+  }, [logos]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -158,15 +187,34 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
     };
   };
 
-  const handleDragStart = (e: React.MouseEvent | React.TouchEvent, type: 'main' | 'details') => {
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent, type: 'main' | 'details' | string) => {
     setIsDragging(type);
+    setActiveElement(type);
 
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
     const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
 
-    const ref = type === 'main' ? mainTextRef : detailsTextRef;
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect();
+    let targetRef;
+    if (type === 'main') {
+      targetRef = mainTextRef;
+    } else if (type === 'details') {
+      targetRef = detailsTextRef;
+    } else {
+      // It's a logo
+      const logoElement = document.getElementById(`logo-${type}`);
+      if (logoElement) {
+        const rect = logoElement.getBoundingClientRect();
+        setDragOffset({
+          x: clientX - rect.left,
+          y: clientY - rect.top,
+        });
+      }
+      e.preventDefault();
+      return;
+    }
+
+    if (targetRef.current) {
+      const rect = targetRef.current.getBoundingClientRect();
       setDragOffset({
         x: clientX - rect.left,
         y: clientY - rect.top,
@@ -193,6 +241,12 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
     } else if (isDragging === 'details') {
       setDetailsTextPosition({ x: newX, y: newY });
       setPositionsCustomized(prev => ({ ...prev, details: true }));
+    } else {
+      // Handle logo dragging
+      setLogoPositions(prev => ({
+        ...prev,
+        [isDragging]: { x: newX, y: newY }
+      }));
     }
   };
 
@@ -229,13 +283,7 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
         className="absolute inset-0 rounded-lg overflow-hidden"
         style={getFilterStyle()}
       >
-        <div className="absolute z-50 top-3 left-3">
-          <img className="h-14" src="https://i.postimg.cc/7ZYbRmWD/image.png" alt="ph-logo" />
-        </div>
-        <div className="absolute z-50 right-3 top-3">
-          <img className="h-14 rounded-xl" src="https://i.postimg.cc/j5TyQr4s/image.png" />
-        </div>
-        <div className="absolute left-5 bottom-3 text-white text-xs z-50">
+        <div className="absolute z-50 left-5 bottom-3 text-white text-xs">
           <h3>https://ph-fest.vercel.app/</h3>
         </div>
         
@@ -244,14 +292,15 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
           alt={template.name}
           className="w-full h-full object-cover"
           style={{
-            // Ensure the image inherits the parent's filter
             filter: 'inherit',
             WebkitFilter: 'inherit',
           }}
         />
-        {/* Main Text */}
+        
+        {/* Main Text with Moveable */}
         <div
           ref={mainTextRef}
+          id="main-text"
           className="text-center p-4 absolute cursor-move"
           style={{
             color: template.defaultTextColor,
@@ -261,8 +310,9 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
             left: `${mainTextPosition.x}px`,
             top: `${mainTextPosition.y}px`,
             textShadow: '0 2px 4px rgba(0,0,0,0.5)',
-            border: isDragging === 'main' ? '2px solid #3b82f6' : 'none',
+            border: activeElement === 'main' ? '0px solid none' : 'none',
           }}
+          onClick={() => setActiveElement('main')}
           onMouseDown={(e) => handleDragStart(e, 'main')}
           onTouchStart={(e) => handleDragStart(e, 'main')}
         >
@@ -276,10 +326,12 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
             {template.defaultText}
           </h2>
         </div>
+
         {/* Greeting Details Text (if exists) */}
         {template.greetingDetails && (
           <div
             ref={detailsTextRef}
+            id="details-text"
             className="text-center p-4 absolute cursor-move"
             style={{
               color: template.greetingDetails.color,
@@ -289,8 +341,9 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
               left: `${detailsTextPosition.x}px`,
               top: `${detailsTextPosition.y}px`,
               textShadow: '0 2px 4px rgba(0,0,0,0.5)',
-              border: isDragging === 'details' ? '2px solid #3b82f6' : 'none',
+              border: activeElement === 'details' ? '0px solid #3b82f6' : 'none',
             }}
+            onClick={() => setActiveElement('details')}
             onMouseDown={(e) => handleDragStart(e, 'details')}
             onTouchStart={(e) => handleDragStart(e, 'details')}
           >
@@ -298,14 +351,130 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
               className="font-bold whitespace-pre-line"
               style={{
                 fontFamily: `${template.greetingDetails.font}, sans-serif`,
-                fontSize: `${isSmall ? '16' :template.greetingDetails.fontSize}px`,
+                fontSize: `${isSmall ? '16' : template.greetingDetails.fontSize}px`,
               }}
             >
               {template.greetingDetails.text}
             </h3>
           </div>
         )}
+
+        {/* Logos */}
+        {logos.filter(logo => logo.visible).map((logo) => (
+          <div
+            key={logo.id}
+            id={`logo-${logo.id}`}
+            className="absolute cursor-move flex items-center justify-center"
+            style={{
+              left: `${logoPositions[logo.id]?.x || 50}px`,
+              top: `${logoPositions[logo.id]?.y || 50}px`,
+              width: `${logoSizes[logo.id]?.width || 60}px`,
+              height: `${logoSizes[logo.id]?.height || 60}px`,
+              border: activeElement === logo.id ? 'none' : 'none',
+              zIndex: 50,
+            }}
+            onClick={() => setActiveElement(logo.id)}
+            onMouseDown={(e) => handleDragStart(e, logo.id)}
+            onTouchStart={(e) => handleDragStart(e, logo.id)}
+          >
+            <img 
+              src={logo.url} 
+              alt={`Logo ${logo.id}`} 
+              className="w-full h-full object-contain"
+            />
+          </div>
+        ))}
       </div>
+
+      {/* Moveable for main text */}
+      {activeElement === 'main' && (
+        <Moveable
+          target={mainTextRef.current}
+          container={canvasRef.current}
+          draggable={true}
+          resizable={true}
+          scalable={false}
+          rotatable={true}
+          warpable={false}
+          keepRatio={false}
+          renderDirections={["n", "e", "s", "w", "ne", "nw", "se", "sw"]}
+          edge={false}
+          onDrag={({ target, translate }) => {
+            target.style.transform = `translate(${translate[0]}px, ${translate[1]}px)`;
+            setPositionsCustomized(prev => ({ ...prev, main: true }));
+          }}
+          onResize={({ target, width, height }) => {
+            target.style.width = `${width}px`;
+            target.style.height = `${height}px`;
+          }}
+          onRotate={({ target, rotate }) => {
+            target.style.transform = `rotate(${rotate}deg)`;
+          }}
+        />
+      )}
+
+      {/* Moveable for details text */}
+      {activeElement === 'details' && template.greetingDetails && (
+        <Moveable
+          target={detailsTextRef.current}
+          container={canvasRef.current}
+          draggable={true}
+          resizable={true}
+          scalable={false}
+          rotatable={true}
+          warpable={false}
+          keepRatio={false}
+          renderDirections={["n", "e", "s", "w", "ne", "nw", "se", "sw"]}
+          edge={false}
+          onDrag={({ target, translate }) => {
+            target.style.transform = `translate(${translate[0]}px, ${translate[1]}px)`;
+            setPositionsCustomized(prev => ({ ...prev, details: true }));
+          }}
+          onResize={({ target, width, height }) => {
+            target.style.width = `${width}px`;
+            target.style.height = `${height}px`;
+          }}
+          onRotate={({ target, rotate }) => {
+            target.style.transform = `rotate(${rotate}deg)`;
+          }}
+        />
+      )}
+
+      {/* Moveable for logos */}
+      {activeElement && !['main', 'details'].includes(activeElement) && (
+        <Moveable
+          target={document.getElementById(`logo-${activeElement}`)}
+          container={canvasRef.current}
+          draggable={true}
+          resizable={true}
+          scalable={true}
+          rotatable={true}
+          warpable={false}
+          keepRatio={true}
+          renderDirections={["n", "e", "s", "w", "ne", "nw", "se", "sw"]}
+          edge={false}
+          onDrag={({ target, translate }) => {
+            target.style.transform = `translate(${translate[0]}px, ${translate[1]}px)`;
+          }}
+          onResize={({ target, width, height }) => {
+            target.style.width = `${width}px`;
+            target.style.height = `${height}px`;
+            
+            setLogoSizes(prev => ({
+              ...prev,
+              [activeElement]: { width, height }
+            }));
+          }}
+          onRotate={({ target, rotate }) => {
+            const currentTransform = target.style.transform || '';
+            if (!currentTransform.includes('rotate')) {
+              target.style.transform += ` rotate(${rotate}deg)`;
+            } else {
+              target.style.transform = currentTransform.replace(/rotate\([^)]+\)/, `rotate(${rotate}deg)`);
+            }
+          }}
+        />
+      )}
     </div>
   );
 };

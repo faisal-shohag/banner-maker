@@ -19,8 +19,7 @@ const TemplateGallery: React.FC<TemplateGalleryProps> = ({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Select Template</h2>
-      
+     
       <div className="space-y-4">
         {categories.map((category) => (
           <div key={category} className="space-y-2">
