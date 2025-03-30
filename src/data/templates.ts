@@ -16,7 +16,7 @@ export interface Template {
     contrast: number;
     saturation: number;
   };
-  category: 'eid-al-fitr' | 'eid-al-adha' | 'general';
+  category: 'eid-al-fitr' | 'eid-al-adha' | 'general' | 'boishakh';
   // Optional greeting details
   greetingDetails?: {
     text: string;
@@ -134,16 +134,41 @@ const templates: Template[] = [
     },
   },
   {
+    id: "template-palestine",
+    name: "Palestine",
+    imageUrl: "https://i.postimg.cc/Hsqw5GZn/palestine.png",
+    width: 1080,
+    height: 1080,
+    defaultText: "Eid Mubarak Palestine!",
+    defaultTextColor: "#cc2121",
+    defaultFont: "Berkshire Swash",
+    defaultFontSize: 60,
+    textPosition: { x: 0.1, y: 0.12},
+    filters: {
+      brightness: 95,
+      contrast: 110,
+      saturation: 95,
+    },
+    category: 'eid-al-fitr',
+    greetingDetails: {
+      text: "Your Lord has not taken leave of you, nor has He detested [you]. - (Quran - 93:3)",
+      color: "#ebfdfb",
+      font: "Scheherazade New",
+      fontSize: 24,
+      position: { x: 0.1, y: 0.23 },
+    },
+  },
+  {
     id: "template-1",
-    name: "Ocean Eid",
-    imageUrl: "https://i.postimg.cc/B6F0y0Ck/image.png",
+    name: "Purple",
+    imageUrl: "https://i.postimg.cc/26bn4Ry6/image.png",
     width: 1200,
     height: 1200,
     defaultText: "Eid Mubarak!",
     defaultTextColor: "#FFFFFF",
-    defaultFont: "Montserrat",
-    defaultFontSize: 50,
-    textPosition: { x: 0.37, y: 0.2},
+    defaultFont: "Fleur De Leah",
+    defaultFontSize: 60,
+    textPosition: { x: -0.1, y: 0.2},
     filters: {
       brightness: 100,
       contrast: 100,
@@ -151,11 +176,12 @@ const templates: Template[] = [
     },
     category: 'eid-al-fitr',
     greetingDetails: {
-      text: "Wishing you peace and joy!",
-      color: "#FFFFFF",
-      font: "Montserrat",
+      text: "On this Eid, may Allah bless our family with health, wealth, and joy!",
+      color: "#c590d0",
+      font: "Amiri",
+      textWidth: 55,
       fontSize: 24,
-      position: { x: 0.37, y: 0.3 },
+      position: { x: 0.030, y: 0.3 },
     },
   },
   {
@@ -183,13 +209,14 @@ const templates: Template[] = [
       position: { x: 0.1, y: 0.45 },
     },
   },
+ 
   {
-    id: "template-palestine",
-    name: "Palestine",
-    imageUrl: "https://i.postimg.cc/Hsqw5GZn/palestine.png",
+    id: "template-boishakh-001",
+    name: "Yellow Colorfull Rickshaw",
+    imageUrl: "https://i.postimg.cc/4ydBCh2L/image.png",
     width: 1080,
     height: 1080,
-    defaultText: "Eid Mubarak Palestine!",
+    defaultText: "",
     defaultTextColor: "#cc2121",
     defaultFont: "Berkshire Swash",
     defaultFontSize: 60,
@@ -199,13 +226,14 @@ const templates: Template[] = [
       contrast: 110,
       saturation: 95,
     },
-    category: 'eid-al-fitr',
+    category: 'boishakh',
     greetingDetails: {
-      text: "Your Lord has not taken leave of you, nor has He detested [you]. - (Quran - 93:3)",
-      color: "#ebfdfb",
-      font: "Scheherazade New",
-      fontSize: 24,
-      position: { x: 0.1, y: 0.23 },
+      text: "নতুন বছর আসুক শুধু আনন্দের স্পর্শ নিয়ে!",
+      color: "#4e2a1d",
+      font: "Hind Siliguri",
+      fontSize: 32,
+      textWidth: 65,
+      position: { x: 0.35, y: 0.34 },
     },
   },
 

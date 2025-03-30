@@ -13,6 +13,10 @@ import templates from '@/data/templates';
 import { useToast } from "@/components/ui/use-toast";
 import { Share2 } from 'lucide-react';
 import ExportShareModal from '@/components/ExportButton';
+import { BiSolidWidget } from "react-icons/bi";
+import { MdOutlineTextFields } from "react-icons/md";
+import { IoMdColorPalette } from "react-icons/io";
+import { AiFillHeart } from "react-icons/ai";
 
 const Index = () => {
   const { toast } = useToast();
@@ -86,9 +90,9 @@ const Index = () => {
               <CardContent className="p-4">
                 <Tabs defaultValue="templates">
                   <TabsList className="grid grid-cols-3 mb-4">
-                    <TabsTrigger value="templates">Templates</TabsTrigger>
-                    <TabsTrigger value="text">Text</TabsTrigger>
-                    <TabsTrigger value="style">Style</TabsTrigger>
+                    <TabsTrigger className='gap-1' value="templates"><BiSolidWidget/> Templates</TabsTrigger>
+                    <TabsTrigger className='gap-1' value="text"><MdOutlineTextFields/> Text</TabsTrigger>
+                    <TabsTrigger className='gap-1' value="style"><IoMdColorPalette/> Style</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="templates" className="space-y-4">
@@ -158,7 +162,10 @@ const Index = () => {
               </CardContent>
             </Card>
             
-            <div className="flex justify-end">
+            <div className="flex justify-between items-center">
+              <div className='font-bold text-muted-foreground flex items-center gap-1 text-xs'>
+                Created with <AiFillHeart className='text-red-500'/> by <a className='underline' target="_blank" href='https://github.com/faisal-shohag'>Abu Nayim Faisal</a>
+              </div>
               <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <DialogTrigger asChild>
                   <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white">

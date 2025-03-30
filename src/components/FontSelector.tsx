@@ -23,6 +23,7 @@ const FontSelector: React.FC<FontSelectorProps> = ({
     { name: 'শ্রেয়াম', value: 'Li Sweet Shreyam Unicode' },
     { name: 'কালপুরুষ', value: 'Kalpurush' },
     { name: 'হিন্দ শিলিগুড়ি', value: 'Hind Siliguri' },
+    { name: 'Fleur De Leah', value: 'Fleur De Leah' },
   ];
 
   return (

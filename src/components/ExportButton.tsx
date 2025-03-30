@@ -46,7 +46,10 @@ const ExportShareModal = ({ filename, onClose }) => {
   return (
     <div className="space-y-6 p-4">
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900">Export</h3>
+      <div className="flex items-center gap-2">
+          <Download className="h-5 w-5 text-gray-600" />
+          <h3 className="text-lg font-semibold text-gray-900">Export</h3>
+        </div>
         <Button
           onClick={handleExport}
           disabled={isExporting}
@@ -60,7 +63,7 @@ const ExportShareModal = ({ filename, onClose }) => {
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <Share2 className="h-5 w-5 text-gray-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Share</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Share<span className='text-xs'> (Exprimental)</span></h3>
         </div>
         <div className="grid grid-cols-4 gap-4">
           <FacebookShareButton url={shareUrl} title={shareTitle}>

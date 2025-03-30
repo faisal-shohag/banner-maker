@@ -234,7 +234,7 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
           <img className="h-14 rounded-xl" src="https://i.postimg.cc/j5TyQr4s/image.png" />
         </div>
         <div className="absolute left-5 bottom-3 text-white text-xs z-50">
-          <h3>Eid Mubarak from Abu Nayim Faisal</h3>
+          <h3>https://ph-fest.vercel.app/</h3>
         </div>
         
         <img
