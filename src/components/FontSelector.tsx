@@ -20,6 +20,9 @@ const FontSelector: React.FC<FontSelectorProps> = ({
     { name: 'Noto Nastaliq Urdu', value: 'Noto Nastaliq Urdu' },
     { name: 'Scheherazade New', value: 'Scheherazade New' },
     { name: 'Berkshire Swash', value: 'Berkshire Swash' },
+    { name: 'শ্রেয়াম', value: 'Li Sweet Shreyam Unicode' },
+    { name: 'কালপুরুষ', value: 'Kalpurush' },
+    { name: 'হিন্দ শিলিগুড়ি', value: 'Hind Siliguri' },
   ];
 
   return (

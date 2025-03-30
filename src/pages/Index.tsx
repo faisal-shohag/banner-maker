@@ -23,12 +23,14 @@ const Index = () => {
   const [mainTextColor, setMainTextColor] = useState(selectedTemplate.defaultTextColor);
   const [mainFont, setMainFont] = useState(selectedTemplate.defaultFont);
   const [mainFontSize, setMainFontSize] = useState(selectedTemplate.defaultFontSize);
+  const [mainTextWidth, setMainTextWidth] = useState(selectedTemplate.textWidth || 80);
   
   // State for greeting details (optional)
   const [detailsText, setDetailsText] = useState(selectedTemplate.greetingDetails?.text || '');
   const [detailsTextColor, setDetailsTextColor] = useState(selectedTemplate.greetingDetails?.color || '#ffffff');
   const [detailsFont, setDetailsFont] = useState(selectedTemplate.greetingDetails?.font || selectedTemplate.defaultFont);
   const [detailsFontSize, setDetailsFontSize] = useState(selectedTemplate.greetingDetails?.fontSize || 24);
+  const [detailsTextWidth, setDetailsTextWidth] = useState(selectedTemplate.greetingDetails?.textWidth || 80);
   
   const [filters, setFilters] = useState(selectedTemplate.filters);
 
@@ -38,6 +40,7 @@ const Index = () => {
     setMainTextColor(selectedTemplate.defaultTextColor);
     setMainFont(selectedTemplate.defaultFont);
     setMainFontSize(selectedTemplate.defaultFontSize);
+    setMainTextWidth(selectedTemplate.textWidth || 80);
     setFilters(selectedTemplate.filters);
     
     // Update greeting details if they exist
@@ -46,11 +49,13 @@ const Index = () => {
       setDetailsTextColor(selectedTemplate.greetingDetails.color);
       setDetailsFont(selectedTemplate.greetingDetails.font);
       setDetailsFontSize(selectedTemplate.greetingDetails.fontSize);
+      setDetailsTextWidth(selectedTemplate.greetingDetails.textWidth || 80);
     } else {
       setDetailsText('');
       setDetailsTextColor('#ffffff');
       setDetailsFont(selectedTemplate.defaultFont);
       setDetailsFontSize(24);
+      setDetailsTextWidth(80);
     }
   }, [selectedTemplate]);
 
@@ -69,6 +74,7 @@ const Index = () => {
     defaultTextColor: mainTextColor,
     defaultFont: mainFont,
     defaultFontSize: mainFontSize,
+    textWidth: mainTextWidth,
     filters: filters,
     greetingDetails: selectedTemplate.greetingDetails ? {
       ...selectedTemplate.greetingDetails,
@@ -76,11 +82,13 @@ const Index = () => {
       color: detailsTextColor,
       font: detailsFont,
       fontSize: detailsFontSize,
+      textWidth: detailsTextWidth,
     } : undefined,
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-6">
+
       <div className="max-w-7xl mx-auto">
         <header className="text-center">
           {/* Header content if any */}
@@ -93,11 +101,11 @@ const Index = () => {
             <Card className="shadow-md">
               <CardContent className="p-4">
                 <Tabs defaultValue="templates">
-                  <TabsList className="grid grid-cols-4 mb-4">
+                  <TabsList className="grid grid-cols-3 mb-4">
                     <TabsTrigger value="templates">Templates</TabsTrigger>
                     <TabsTrigger value="text">Text</TabsTrigger>
                     <TabsTrigger value="style">Style</TabsTrigger>
-                    <TabsTrigger value="filters">Filters</TabsTrigger>
+                    {/* <TabsTrigger value="filters">Filters</TabsTrigger> */}
                   </TabsList>
                   
                   <TabsContent value="templates" className="space-y-4">
@@ -117,6 +125,8 @@ const Index = () => {
                         setText={setMainText}
                         fontSize={mainFontSize}
                         setFontSize={setMainFontSize}
+                        textWidth={mainTextWidth}
+                        setTextWidth={setMainTextWidth}
                       />
                       <Separator className="my-4" />
                       <FontSelector font={mainFont} setFont={setMainFont} />
@@ -131,6 +141,8 @@ const Index = () => {
                           setText={setDetailsText}
                           fontSize={detailsFontSize}
                           setFontSize={setDetailsFontSize}
+                          textWidth={detailsTextWidth}
+                          setTextWidth={setDetailsTextWidth}
                         />
                         <Separator className="my-4" />
                         <FontSelector font={detailsFont} setFont={setDetailsFont} />
@@ -153,13 +165,13 @@ const Index = () => {
                     )}
                   </TabsContent>
                   
-                  <TabsContent value="filters" className="space-y-4">
+                  {/* <TabsContent value="filters" className="space-y-4">
                     <FilterControls
                       filters={filters}
                       setFilters={setFilters}
                       resetFilters={resetFilters}
                     />
-                  </TabsContent>
+                  </TabsContent> */}
                 </Tabs>
               </CardContent>
             </Card>
@@ -168,12 +180,11 @@ const Index = () => {
           {/* Right Panel - Banner Preview */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-6 order-1 lg:order-2">
             <Card className="shadow-md animate-fade-in relative">
-            <div className='flex justify-end items-center pt-1 px-5 gap-2 absolute z-50 bg-white rounded-xl -top-5 shadow-2xl right-0'>
-                    <div><TiExport/></div>
-                    <div><RiShareFill/></div>
+              <div className='flex justify-end items-center pt-1 px-5 gap-2 absolute z-50 bg-white rounded-xl -top-5 shadow-2xl right-0'>
+                <div><TiExport/></div>
+                <div><RiShareFill/></div>
               </div>
               <CardContent className="p-2 flex items-center justify-center">
-               
                 <BannerCanvas template={modifiedTemplate} />
               </CardContent>
             </Card>

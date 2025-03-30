@@ -10,6 +10,7 @@ export interface Template {
   defaultFont: string;
   defaultFontSize: number;
   textPosition: { x: number; y: number };
+  textWidth?: number;
   filters: {
     brightness: number;
     contrast: number;
@@ -23,10 +24,63 @@ export interface Template {
     font: string;
     fontSize: number;
     position: { x: number; y: number };
+    textWidth?: number;
   };
 }
 
 const templates: Template[] = [
+  {
+    id: "ph-1",
+    name: "PH-001",
+    imageUrl: "https://i.postimg.cc/gj7BSJJ9/ph-1.jpg",
+    width: 735,
+    height: 490,
+    defaultText: "ঈদ মোবারক",
+    defaultTextColor: "#d8b5f5",
+    defaultFont: "Li Sweet Shreyam Unicode",
+    defaultFontSize: 60,
+    textPosition: { x: -0.1, y: 0.2},
+    filters: {
+      brightness: 100,
+      contrast: 100,
+      saturation: 100,
+    },
+    category: 'eid-al-fitr',
+    greetingDetails: {
+      text: "ঈদের অনাবিল আনন্দে ভরে উঠুক প্রতিটি হৃদয়। আপনার জীবনের প্রতিটি দিন ছেয়ে যাক ঈদের খুশিতে।",
+      color: "#b79ac9",
+      font: "Kalpurush",
+      fontSize: 24,
+      textWidth: 55,
+      position: { x: 0.03, y: 0.35 },
+    },
+  },
+  {
+    id: "ph-2",
+    name: "PH-002",
+    imageUrl: "https://i.postimg.cc/QCWxnFb1/image.png",
+    width: 735,
+    height: 690,
+    defaultText: "ঈদ মোবারক",
+    defaultTextColor: "#d8b5f5",
+    defaultFont: "Li Sweet Shreyam Unicode",
+    defaultFontSize: 60,
+    textPosition: { x: 0.14, y: 0.27},
+    filters: {
+      brightness: 100,
+      contrast: 100,
+      saturation: 100,
+    },
+    category: 'eid-al-fitr',
+    greetingDetails: {
+      text: "ঈদের অনাবিল আনন্দে ভরে উঠুক প্রতিটি হৃদয়। আপনার জীবনের প্রতিটি দিন ছেয়ে যাক ঈদের খুশিতে।",
+      color: "#b79ac9",
+      font: "Kalpurush",
+      fontSize: 24,
+      textWidth: 45,
+      position: { x: 0.30, y: 0.40 },
+    },
+  },
   {
     id: "template-1",
     name: "Ocean Eid",
@@ -56,8 +110,8 @@ const templates: Template[] = [
     id: "template-4",
     name: "Brown Laterns",
     imageUrl: "https://i.postimg.cc/XJL4b0hv/brown.png",
-    width: 1200,
-    height: 1200,
+    width: 800,
+    height: 800,
     defaultText: "Eid Mubarak!",
     defaultTextColor: "#0A866A",
     defaultFont: "Berkshire Swash",
@@ -77,13 +131,12 @@ const templates: Template[] = [
       position: { x: 0.1, y: 0.45 },
     },
   },
-
   {
     id: "template-palestine",
     name: "Palestine",
     imageUrl: "https://i.postimg.cc/Hsqw5GZn/palestine.png",
-    width: 1200,
-    height: 1200,
+    width: 1080,
+    height: 1080,
     defaultText: "Eid Mubarak Palestine!",
     defaultTextColor: "#cc2121",
     defaultFont: "Berkshire Swash",
@@ -103,8 +156,6 @@ const templates: Template[] = [
       position: { x: 0.1, y: 0.23 },
     },
   },
-
-  
 
 ];
 

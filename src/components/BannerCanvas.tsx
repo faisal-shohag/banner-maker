@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Template } from '@/data/templates';
 
 interface BannerCanvasProps {
   template: Template;
@@ -17,12 +16,41 @@ interface TextBounds {
   height: number;
 }
 
+// Define the Filters interface to match your template structure
+interface Filters {
+  brightness: number;
+  contrast: number;
+  saturation: number;
+}
+
+// Extend the Template interface if not already defined in '@/data/templates'
+interface Template {
+  name: string;
+  width: number;
+  height: number;
+  imageUrl?: string;
+  defaultText: string;
+  defaultTextColor: string;
+  defaultFont: string;
+  defaultFontSize: number;
+  textWidth?: number;
+  textPosition: { x: number; y: number };
+  filters: Filters;
+  greetingDetails?: {
+    text: string;
+    color: string;
+    font: string;
+    fontSize: number;
+    textWidth?: number;
+    position: { x: number; y: number };
+  };
+}
+
 const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const mainTextRef = useRef<HTMLDivElement>(null);
   const detailsTextRef = useRef<HTMLDivElement>(null);
   
-  // Positions in pixels, initialized from relative template positions
   const [mainTextPosition, setMainTextPosition] = useState<TextPosition>({ x: 0, y: 0 });
   const [detailsTextPosition, setDetailsTextPosition] = useState<TextPosition>({ x: 0, y: 0 });
   const [mainTextBounds, setMainTextBounds] = useState<TextBounds>({ width: 0, height: 0 });
@@ -30,13 +58,14 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
   const [isDragging, setIsDragging] = useState<'main' | 'details' | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   
-  // Track if positions have been customized via drag
   const [positionsCustomized, setPositionsCustomized] = useState({
     main: false,
-    details: false
+    details: false,
   });
 
-  // Set initial positions only when the component first mounts or when template changes
+
+
+
   useEffect(() => {
     if (!canvasRef.current) return;
 
@@ -44,7 +73,6 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
     const canvasWidth = canvas.clientWidth;
     const canvasHeight = canvas.clientHeight;
 
-    // Only set initial positions if they haven't been customized
     if (!positionsCustomized.main) {
       setMainTextPosition({
         x: template.textPosition.x * canvasWidth,
@@ -60,7 +88,6 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
     }
   }, [template.name, canvasRef.current?.clientWidth, canvasRef.current?.clientHeight]);
 
-  // Update text bounds when text content or styling changes
   useEffect(() => {
     if (!canvasRef.current) return;
 
@@ -68,15 +95,14 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
     const canvasWidth = canvas.clientWidth;
     const canvasHeight = canvas.clientHeight;
 
-    // Main text bounds
     if (mainTextRef.current) {
       const mainTemp = document.createElement('div');
       mainTemp.style.position = 'absolute';
       mainTemp.style.visibility = 'hidden';
       mainTemp.style.fontSize = `${template.defaultFontSize}px`;
       mainTemp.style.fontFamily = template.defaultFont;
-      mainTemp.style.width = '80%';
-      mainTemp.style.maxWidth = `${canvasWidth * 0.8}px`;
+      mainTemp.style.width = `${template.textWidth || 80}%`;
+      mainTemp.style.maxWidth = `${canvasWidth * (template.textWidth || 80) / 100}px`;
       mainTemp.style.whiteSpace = 'pre-line';
       mainTemp.style.textAlign = 'center';
       mainTemp.innerHTML = template.defaultText;
@@ -87,15 +113,14 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
       document.body.removeChild(mainTemp);
     }
 
-    // Details text bounds (if exists)
     if (detailsTextRef.current && template.greetingDetails) {
       const detailsTemp = document.createElement('div');
       detailsTemp.style.position = 'absolute';
       detailsTemp.style.visibility = 'hidden';
       detailsTemp.style.fontSize = `${template.greetingDetails.fontSize}px`;
       detailsTemp.style.fontFamily = template.greetingDetails.font;
-      detailsTemp.style.width = '80%';
-      detailsTemp.style.maxWidth = `${canvasWidth * 0.8}px`;
+      detailsTemp.style.width = `${template.greetingDetails.textWidth || 80}%`;
+      detailsTemp.style.maxWidth = `${canvasWidth * (template.greetingDetails.textWidth || 80) / 100}px`;
       detailsTemp.style.whiteSpace = 'pre-line';
       detailsTemp.style.textAlign = 'center';
       detailsTemp.innerHTML = template.greetingDetails.text;
@@ -109,27 +134,28 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
     template.defaultFontSize,
     template.defaultFont,
     template.defaultText,
+    template.textWidth,
     template.greetingDetails?.fontSize,
     template.greetingDetails?.font,
     template.greetingDetails?.text,
-    canvasRef.current?.clientWidth
+    template.greetingDetails?.textWidth,
+    canvasRef.current?.clientWidth,
   ]);
 
-  // Reset position customization when template changes
   useEffect(() => {
     setPositionsCustomized({
       main: false,
-      details: false
+      details: false,
     });
   }, [template.name]);
 
   const getFilterStyle = () => {
     return {
       filter: `brightness(${template.filters.brightness}%) contrast(${template.filters.contrast}%) saturate(${template.filters.saturation}%)`,
+      WebkitFilter: `brightness(${template.filters.brightness}%) contrast(${template.filters.contrast}%) saturate(${template.filters.saturation}%)`, // Add Webkit prefix for better compatibility
     };
   };
 
-  // Handle drag start
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent, type: 'main' | 'details') => {
     setIsDragging(type);
 
@@ -148,7 +174,6 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
     e.preventDefault();
   };
 
-  // Handle drag movement
   const handleDrag = (e: MouseEvent | TouchEvent) => {
     if (!isDragging || !canvasRef.current) return;
 
@@ -169,12 +194,10 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
     }
   };
 
-  // Handle drag end
   const handleDragEnd = () => {
     setIsDragging(null);
   };
 
-  // Add/remove event listeners
   useEffect(() => {
     if (isDragging) {
       window.addEventListener("mousemove", handleDrag);
@@ -198,15 +221,19 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
 
   return (
     <div className="relative w-full" style={{ aspectRatio: `${template.width}/${template.height}` }}>
-      <div id="banner-canvas" ref={canvasRef} className="absolute inset-0 rounded-lg overflow-hidden">
-        <div className='absolute z-50 top-3 left-3'>
-          <img className='h-14' src='https://i.postimg.cc/7ZYbRmWD/image.png' alt='ph-logo'/>
+      <div
+        id="banner-canvas"
+        ref={canvasRef}
+        className="absolute inset-0 rounded-lg overflow-hidden"
+        style={getFilterStyle()}
+      >
+        <div className="absolute z-50 top-3 left-3">
+          <img className="h-14" src="https://i.postimg.cc/7ZYbRmWD/image.png" alt="ph-logo" />
         </div>
-        <div className='absolute z-50 right-3 top-3'>
-          <img className='h-14 rounded-xl' src='https://play-lh.googleusercontent.com/sD1PjHX1s76Nw54bki3rIvqjLmKXrJNenU8YmrKTznL3r9c7a8wFzjb6_TUoyKAMa5w'/>
+        <div className="absolute z-50 right-3 top-3">
+          <img className="h-14 rounded-xl" src="https://i.postimg.cc/j5TyQr4s/image.png" />
         </div>
-
-        <div className='absolute left-5  bottom-3 text-white text-xs z-50'>
+        <div className="absolute left-5 bottom-3 text-white text-xs z-50">
           <h3>Eid Mubarak from Abu Nayim Faisal</h3>
         </div>
         
@@ -214,7 +241,11 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
           src={template.imageUrl || "/placeholder.svg"}
           alt={template.name}
           className="w-full h-full object-cover"
-          style={getFilterStyle()}
+          style={{
+            // Ensure the image inherits the parent's filter
+            filter: 'inherit',
+            WebkitFilter: 'inherit',
+          }}
         />
         {/* Main Text */}
         <div
@@ -222,7 +253,7 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
           className="text-center p-4 absolute cursor-move"
           style={{
             color: template.defaultTextColor,
-            width: '80%',
+            width: `${template.textWidth || 80}%`,
             userSelect: 'none',
             touchAction: 'none',
             left: `${mainTextPosition.x}px`,
@@ -233,9 +264,9 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
           onMouseDown={(e) => handleDragStart(e, 'main')}
           onTouchStart={(e) => handleDragStart(e, 'main')}
         >
-          <h2 
+          <h2
             className="font-bold whitespace-pre-line"
-            style={{ 
+            style={{
               fontFamily: `${template.defaultFont}, sans-serif`,
               fontSize: `${template.defaultFontSize}px`,
             }}
@@ -250,7 +281,7 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
             className="text-center p-4 absolute cursor-move"
             style={{
               color: template.greetingDetails.color,
-              width: '80%',
+              width: `${template.greetingDetails.textWidth || 80}%`,
               userSelect: 'none',
               touchAction: 'none',
               left: `${detailsTextPosition.x}px`,
@@ -261,9 +292,9 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
             onMouseDown={(e) => handleDragStart(e, 'details')}
             onTouchStart={(e) => handleDragStart(e, 'details')}
           >
-            <h3 
+            <h3
               className="font-bold whitespace-pre-line"
-              style={{ 
+              style={{
                 fontFamily: `${template.greetingDetails.font}, sans-serif`,
                 fontSize: `${template.greetingDetails.fontSize}px`,
               }}

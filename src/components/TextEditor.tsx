@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 
@@ -9,6 +8,8 @@ interface TextEditorProps {
   setText: (text: string) => void;
   fontSize: number;
   setFontSize: (size: number) => void;
+  textWidth?: number;
+  setTextWidth?: (width: number) => void;
 }
 
 const TextEditor: React.FC<TextEditorProps> = ({
@@ -16,40 +17,41 @@ const TextEditor: React.FC<TextEditorProps> = ({
   setText,
   fontSize,
   setFontSize,
+  textWidth = 80,
+  setTextWidth
 }) => {
-  const handleFontSizeChange = (value: number[]) => {
-    setFontSize(value[0]);
-  };
-
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Edit Text</h2>
+      <Textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Enter text here"
+        className="min-h-32"
+      />
       
       <div className="space-y-2">
-        <Label htmlFor="banner-text">Greeting Text</Label>
-        <Input
-          id="banner-text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Enter your greeting text"
-          className="w-full"
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <div className="flex justify-between">
-          <Label htmlFor="font-size">Font Size</Label>
-          <span className="text-sm text-muted-foreground">{fontSize}px</span>
-        </div>
+        <Label>Font Size: {fontSize}px</Label>
         <Slider
-          id="font-size"
-          min={16}
+          value={[fontSize]}
+          min={12}
           max={120}
           step={1}
-          value={[fontSize]}
-          onValueChange={handleFontSizeChange}
+          onValueChange={(values) => setFontSize(values[0])}
         />
       </div>
+      
+      {setTextWidth && (
+        <div className="space-y-2">
+          <Label>Text Width: {textWidth}%</Label>
+          <Slider
+            value={[textWidth]}
+            min={20}
+            max={100}
+            step={5}
+            onValueChange={(values) => setTextWidth(values[0])}
+          />
+        </div>
+      )}
     </div>
   );
 };
