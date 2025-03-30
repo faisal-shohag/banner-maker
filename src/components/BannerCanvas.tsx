@@ -283,7 +283,7 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template, logos = [] }) => 
         className="absolute inset-0 rounded-lg overflow-hidden"
         style={getFilterStyle()}
       >
-        <div className="absolute z-50 left-5 bottom-3 text-white text-xs">
+        <div className="absolute z-50 left-5 bottom-3 text-white text-xs hidden">
           <h3>https://ph-fest.vercel.app/</h3>
         </div>
         
