@@ -30,6 +30,32 @@ export interface Template {
 
 const templates: Template[] = [
   {
+    id: "ph-00",
+    name: "PH-000",
+    imageUrl: "https://i.postimg.cc/bvdSw6TR/Untitled-1-01.png",
+    width: 735,
+    height: 490,
+    defaultText: "ঈদ মোবারক",
+    defaultTextColor: "#d8b5f5",
+    defaultFont: "Li Sweet Shreyam Unicode",
+    defaultFontSize: 60,
+    textPosition: { x: 0.3, y: 0.2},
+    filters: {
+      brightness: 100,
+      contrast: 100,
+      saturation: 100,
+    },
+    category: 'eid-al-fitr',
+    greetingDetails: {
+      text: "ঈদের অনাবিল আনন্দে ভরে উঠুক প্রতিটি হৃদয়। আপনার জীবনের প্রতিটি দিন ছেয়ে যাক ঈদের খুশিতে।",
+      color: "#b79ac9",
+      font: "Kalpurush",
+      fontSize: 24,
+      textWidth: 45,
+      position: { x: 0.5, y: 0.35 },
+    },
+  },
+  {
     id: "ph-1",
     name: "PH-001",
     imageUrl: "https://i.postimg.cc/gj7BSJJ9/ph-1.jpg",
