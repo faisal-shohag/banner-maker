@@ -1,5 +1,6 @@
 "use client";
 
+import { useDeviceSize } from '@/hooks/use-device-size';
 import React, { useRef, useState, useEffect } from 'react';
 
 interface BannerCanvasProps {
@@ -57,7 +58,8 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
   const [detailsTextBounds, setDetailsTextBounds] = useState<TextBounds>({ width: 0, height: 0 });
   const [isDragging, setIsDragging] = useState<'main' | 'details' | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  
+  const { isSmall } = useDeviceSize(); 
+
   const [positionsCustomized, setPositionsCustomized] = useState({
     main: false,
     details: false,
@@ -268,7 +270,7 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
             className="font-bold whitespace-pre-line"
             style={{
               fontFamily: `${template.defaultFont}, sans-serif`,
-              fontSize: `${template.defaultFontSize}px`,
+              fontSize: `${isSmall ? '32' : template.defaultFontSize}px`,
             }}
           >
             {template.defaultText}
@@ -296,7 +298,7 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template }) => {
               className="font-bold whitespace-pre-line"
               style={{
                 fontFamily: `${template.greetingDetails.font}, sans-serif`,
-                fontSize: `${template.greetingDetails.fontSize}px`,
+                fontSize: `${isSmall ? '16' :template.greetingDetails.fontSize}px`,
               }}
             >
               {template.greetingDetails.text}
