@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { exportToPng } from '@/utils/exportUtils';
+import { exportToPng } from '@/utils/exportUtils'; // Updated function
 import { Download, Share2 } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -22,8 +22,8 @@ const ExportShareModal = ({ filename, onClose }) => {
   const handleExport = async () => {
     try {
       setIsExporting(true);
-      const url = await exportToPng('banner-canvas', filename);
-      setImageUrl(url); // Assuming exportToPng returns a data URL
+      const url = await exportToPng('banner-canvas', filename); // Now returns dataUrl
+      setImageUrl(url); // Set the data URL for sharing
       toast({
         title: 'Export Successful',
         description: 'Banner has been exported as PNG!',
@@ -45,7 +45,6 @@ const ExportShareModal = ({ filename, onClose }) => {
 
   return (
     <div className="space-y-6 p-4">
-      {/* Export Section */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-900">Export</h3>
         <Button
@@ -58,7 +57,6 @@ const ExportShareModal = ({ filename, onClose }) => {
         </Button>
       </div>
 
-      {/* Share Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <Share2 className="h-5 w-5 text-gray-600" />

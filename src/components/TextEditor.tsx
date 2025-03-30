@@ -26,7 +26,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Enter text here"
-        className="min-h-32"
+        className="min-h-32 text-lg font-kalpurush"
       />
       
       <div className="space-y-2">

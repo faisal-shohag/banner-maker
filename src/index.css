@@ -154,6 +154,10 @@
   font-family: "Poppins", sans-serif;
 }
 
+.font-kalpurush {
+  font-family: 'Kalpurush', sans-serif;
+}
+
 .banner-canvas {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }

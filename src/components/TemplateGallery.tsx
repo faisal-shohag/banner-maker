@@ -25,7 +25,7 @@ const TemplateGallery: React.FC<TemplateGalleryProps> = ({
         {categories.map((category) => (
           <div key={category} className="space-y-2">
             <h3 className="text-sm font-medium capitalize">{category.replace(/-/g, ' ')}</h3>
-            <ScrollArea className="h-72 w-full">
+            <ScrollArea className=" w-full">
               <div className="flex flex-wrap gap-3 p-1">
                 {templates
                   .filter(t => t.category === category)
