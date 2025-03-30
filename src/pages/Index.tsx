@@ -1,42 +1,67 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import BannerCanvas from '@/components/BannerCanvas';
-import TemplateGallery from '@/components/TemplateGallery';
-import TextEditor from '@/components/TextEditor';
-import ColorPicker from '@/components/ColorPicker';
-import FontSelector from '@/components/FontSelector';
-import templates from '@/data/templates';
+import React, { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import BannerCanvas from "@/components/BannerCanvas";
+import TemplateGallery from "@/components/TemplateGallery";
+import TextEditor from "@/components/TextEditor";
+import ColorPicker from "@/components/ColorPicker";
+import FontSelector from "@/components/FontSelector";
+import templates from "@/data/templates";
 import { useToast } from "@/components/ui/use-toast";
-import { Share2 } from 'lucide-react';
-import ExportShareModal from '@/components/ExportButton';
+import { Share2 } from "lucide-react";
+import ExportShareModal from "@/components/ExportButton";
 import { BiSolidWidget } from "react-icons/bi";
 import { MdOutlineTextFields } from "react-icons/md";
 import { IoMdColorPalette } from "react-icons/io";
 import { AiFillHeart } from "react-icons/ai";
+import FeedbackSection from "@/components/Feedback";
+import { useDeviceSize } from "@/hooks/use-device-size";
 
 const Index = () => {
   const { toast } = useToast();
   const [selectedTemplate, setSelectedTemplate] = useState(templates[0]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+  const { isLarge } = useDeviceSize(); 
+
   // State for main text
   const [mainText, setMainText] = useState(selectedTemplate.defaultText);
-  const [mainTextColor, setMainTextColor] = useState(selectedTemplate.defaultTextColor);
+  const [mainTextColor, setMainTextColor] = useState(
+    selectedTemplate.defaultTextColor
+  );
   const [mainFont, setMainFont] = useState(selectedTemplate.defaultFont);
-  const [mainFontSize, setMainFontSize] = useState(selectedTemplate.defaultFontSize);
-  const [mainTextWidth, setMainTextWidth] = useState(selectedTemplate.textWidth || 80);
-  
+  const [mainFontSize, setMainFontSize] = useState(
+    selectedTemplate.defaultFontSize
+  );
+  const [mainTextWidth, setMainTextWidth] = useState(
+    selectedTemplate.textWidth || 80
+  );
+
   // State for greeting details (optional)
-  const [detailsText, setDetailsText] = useState(selectedTemplate.greetingDetails?.text || '');
-  const [detailsTextColor, setDetailsTextColor] = useState(selectedTemplate.greetingDetails?.color || '#ffffff');
-  const [detailsFont, setDetailsFont] = useState(selectedTemplate.greetingDetails?.font || selectedTemplate.defaultFont);
-  const [detailsFontSize, setDetailsFontSize] = useState(selectedTemplate.greetingDetails?.fontSize || 24);
-  const [detailsTextWidth, setDetailsTextWidth] = useState(selectedTemplate.greetingDetails?.textWidth || 80);
-  
+  const [detailsText, setDetailsText] = useState(
+    selectedTemplate.greetingDetails?.text || ""
+  );
+  const [detailsTextColor, setDetailsTextColor] = useState(
+    selectedTemplate.greetingDetails?.color || "#ffffff"
+  );
+  const [detailsFont, setDetailsFont] = useState(
+    selectedTemplate.greetingDetails?.font || selectedTemplate.defaultFont
+  );
+  const [detailsFontSize, setDetailsFontSize] = useState(
+    selectedTemplate.greetingDetails?.fontSize || 24
+  );
+  const [detailsTextWidth, setDetailsTextWidth] = useState(
+    selectedTemplate.greetingDetails?.textWidth || 80
+  );
+
   const [filters, setFilters] = useState(selectedTemplate.filters);
 
   useEffect(() => {
@@ -46,7 +71,7 @@ const Index = () => {
     setMainFontSize(selectedTemplate.defaultFontSize);
     setMainTextWidth(selectedTemplate.textWidth || 80);
     setFilters(selectedTemplate.filters);
-    
+
     if (selectedTemplate.greetingDetails) {
       setDetailsText(selectedTemplate.greetingDetails.text);
       setDetailsTextColor(selectedTemplate.greetingDetails.color);
@@ -54,8 +79,8 @@ const Index = () => {
       setDetailsFontSize(selectedTemplate.greetingDetails.fontSize);
       setDetailsTextWidth(selectedTemplate.greetingDetails.textWidth || 80);
     } else {
-      setDetailsText('');
-      setDetailsTextColor('#ffffff');
+      setDetailsText("");
+      setDetailsTextColor("#ffffff");
       setDetailsFont(selectedTemplate.defaultFont);
       setDetailsFontSize(24);
       setDetailsTextWidth(80);
@@ -70,14 +95,16 @@ const Index = () => {
     defaultFontSize: mainFontSize,
     textWidth: mainTextWidth,
     filters: filters,
-    greetingDetails: selectedTemplate.greetingDetails ? {
-      ...selectedTemplate.greetingDetails,
-      text: detailsText,
-      color: detailsTextColor,
-      font: detailsFont,
-      fontSize: detailsFontSize,
-      textWidth: detailsTextWidth,
-    } : undefined,
+    greetingDetails: selectedTemplate.greetingDetails
+      ? {
+          ...selectedTemplate.greetingDetails,
+          text: detailsText,
+          color: detailsTextColor,
+          font: detailsFont,
+          fontSize: detailsFontSize,
+          textWidth: detailsTextWidth,
+        }
+      : undefined,
   };
 
   return (
@@ -90,11 +117,17 @@ const Index = () => {
               <CardContent className="p-4">
                 <Tabs defaultValue="templates">
                   <TabsList className="grid grid-cols-3 mb-4">
-                    <TabsTrigger className='gap-1' value="templates"><BiSolidWidget/> Templates</TabsTrigger>
-                    <TabsTrigger className='gap-1' value="text"><MdOutlineTextFields/> Text</TabsTrigger>
-                    <TabsTrigger className='gap-1' value="style"><IoMdColorPalette/> Style</TabsTrigger>
+                    <TabsTrigger className="gap-1" value="templates">
+                      <BiSolidWidget /> Templates
+                    </TabsTrigger>
+                    <TabsTrigger className="gap-1" value="text">
+                      <MdOutlineTextFields /> Text
+                    </TabsTrigger>
+                    <TabsTrigger className="gap-1" value="style">
+                      <IoMdColorPalette /> Style
+                    </TabsTrigger>
                   </TabsList>
-                  
+
                   <TabsContent value="templates" className="space-y-4">
                     <TemplateGallery
                       templates={templates}
@@ -102,7 +135,7 @@ const Index = () => {
                       onSelectTemplate={setSelectedTemplate}
                     />
                   </TabsContent>
-                  
+
                   <TabsContent value="text" className="space-y-4">
                     <div>
                       <h3 className="text-lg font-semibold mb-2">Main Text</h3>
@@ -117,10 +150,12 @@ const Index = () => {
                       <Separator className="my-4" />
                       <FontSelector font={mainFont} setFont={setMainFont} />
                     </div>
-                    
+
                     {selectedTemplate.greetingDetails && (
                       <div>
-                        <h3 className="text-lg font-semibold mb-2">Details Text</h3>
+                        <h3 className="text-lg font-semibold mb-2">
+                          Details Text
+                        </h3>
                         <TextEditor
                           text={detailsText}
                           setText={setDetailsText}
@@ -130,11 +165,14 @@ const Index = () => {
                           setTextWidth={setDetailsTextWidth}
                         />
                         <Separator className="my-4" />
-                        <FontSelector font={detailsFont} setFont={setDetailsFont} />
+                        <FontSelector
+                          font={detailsFont}
+                          setFont={setDetailsFont}
+                        />
                       </div>
                     )}
                   </TabsContent>
-                  
+
                   <TabsContent value="style" className="space-y-4">
                     <ColorPicker
                       color={mainTextColor}
@@ -152,6 +190,10 @@ const Index = () => {
                 </Tabs>
               </CardContent>
             </Card>
+
+            { !isLarge && <div className=" mt-5">
+              <FeedbackSection />
+            </div>}
           </div>
 
           {/* Right Panel - Banner Preview */}
@@ -161,10 +203,18 @@ const Index = () => {
                 <BannerCanvas template={modifiedTemplate} />
               </CardContent>
             </Card>
-            
-            <div className="flex justify-between items-center">
-              <div className='font-bold text-muted-foreground flex items-center gap-1 text-xs'>
-                Created with <AiFillHeart className='text-red-500'/> by <a className='underline' target="_blank" href='https://github.com/faisal-shohag'>Abu Nayim Faisal</a>
+
+             {/* SETTINGS */}
+            <div className="flex justify-between items-center order-1">
+              <div className="font-bold text-muted-foreground flex items-center gap-1 text-xs">
+                Created with <AiFillHeart className="text-red-500" /> by{" "}
+                <a
+                  className="underline"
+                  target="_blank"
+                  href="https://github.com/faisal-shohag"
+                >
+                  Abu Nayim Faisal
+                </a>
               </div>
               <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <DialogTrigger asChild>
@@ -177,15 +227,23 @@ const Index = () => {
                   <DialogHeader>
                     <DialogTitle>Export & Share Your Banner</DialogTitle>
                   </DialogHeader>
-                  <ExportShareModal 
-                    filename={`eid-banner-${selectedTemplate.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  <ExportShareModal
+                    filename={`eid-banner-${selectedTemplate.name
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}`}
                     onClose={() => setIsModalOpen(false)}
                   />
                 </DialogContent>
               </Dialog>
             </div>
+            { isLarge && <div className="">
+              <FeedbackSection />
+            </div>}
+
           </div>
+   
         </div>
+        
       </div>
     </div>
   );
