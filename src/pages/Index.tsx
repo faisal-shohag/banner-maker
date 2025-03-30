@@ -22,7 +22,8 @@ import { Share2 } from "lucide-react";
 import ExportShareModal from "@/components/ExportButton";
 import { BiSolidWidget } from "react-icons/bi";
 import { MdOutlineTextFields } from "react-icons/md";
-import { IoMdColorPalette, IoMdImage } from "react-icons/io";
+import { IoIosLeaf, IoMdColorPalette, IoMdImage } from "react-icons/io";
+
 import { AiFillHeart } from "react-icons/ai";
 import { FaRegImages } from "react-icons/fa"; // Import for logo tab icon
 import FeedbackSection from "@/components/Feedback";
@@ -183,7 +184,7 @@ const Index = () => {
                     </TabsTrigger>
 
                     <TabsTrigger className="gap-1" value="logos">
-                      <IoMdColorPalette /> Logos
+                      <IoIosLeaf /> Logos
                     </TabsTrigger>
                   </TabsList>
 
