@@ -320,7 +320,7 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template, logos = [] }) => 
             className="font-bold whitespace-pre-line"
             style={{
               fontFamily: `${template.defaultFont}, sans-serif`,
-              fontSize: `${isSmall ? '32' : template.defaultFontSize}px`,
+              fontSize: `${isSmall ? template.defaultFontSize/2 : template.defaultFontSize}px`,
             }}
           >
             {template.defaultText}
@@ -351,7 +351,7 @@ const BannerCanvas: React.FC<BannerCanvasProps> = ({ template, logos = [] }) => 
               className="font-bold whitespace-pre-line"
               style={{
                 fontFamily: `${template.greetingDetails.font}, sans-serif`,
-                fontSize: `${isSmall ? '16' : template.greetingDetails.fontSize}px`,
+                fontSize: `${isSmall ? template.greetingDetails.fontSize/2 : template.greetingDetails.fontSize}px`,
               }}
             >
               {template.greetingDetails.text}
