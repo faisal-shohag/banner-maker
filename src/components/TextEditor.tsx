@@ -29,7 +29,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
         className="min-h-32 text-lg font-kalpurush"
       />
       
-      <div className="space-y-2 hidden">
+      <div className="space-y-2">
         <Label>Font Size: {fontSize}px</Label>
         <Slider
           value={[fontSize]}
